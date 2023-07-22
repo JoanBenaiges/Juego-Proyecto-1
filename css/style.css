@@ -1,0 +1,10 @@
+* {
+    margin: 0;
+    padding: 0
+}
+
+#game-screen {
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+}
