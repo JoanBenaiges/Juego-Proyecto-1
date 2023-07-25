@@ -1,7 +1,46 @@
 class Wall {
 
-    constructor(gameScreen, gameSize,) {
+    constructor(gameScreen, gameSize, playerPos, playerSize) {
 
+        this.gameScreen = gameScreen
+        this.gameSize = gameSize
+        this.playerPos = playerPos
+        this.playerSize = playerSize
+        this.wallSize = {
+            w: innerWidth,
+            h: 30
+        }
+
+        this.wallPos = {
+            left: 0,
+            top: gameSize.h - this.wallSize.h
+        }
+
+        this.init()
+
+        this.playerPos = playerPos;
+        this.playerSize = playerSize;
+    }
+
+    init() {
+        this.wallElement = document.createElement('div')
+
+        this.wallElement.style.position = "absolute"
+        this.wallElement.style.width = `${this.wallSize.w}px`
+        this.wallElement.style.height = `${this.wallSize.h}px`
+        this.wallElement.style.left = `${this.wallPos.left}px`
+        this.wallElement.style.top = `${this.wallPos.top}px`
+        this.wallElement.style.backgroundColor = 'green'
+
+        this.gameScreen.appendChild(this.wallElement)
+
+    }
+
+}
+
+class Wall2 {
+
+    constructor(gameScreen, gameSize) {
         this.gameScreen = gameScreen
         this.gameSize = gameSize
 
@@ -12,7 +51,7 @@ class Wall {
 
         this.wallPos = {
             left: 0,
-            top: gameSize.h - this.wallSize.h
+            top: 0
         }
 
         this.init()
@@ -31,32 +70,10 @@ class Wall {
         this.gameScreen.appendChild(this.wallElement)
 
     }
+
+
+
 }
-
-
-class Wall2 extends Wall {
-
-    constructor(gameScreen, gameSize,) {
-
-        super();
-        this.gameScreen = gameScreen
-        this.gameSize = gameSize
-
-        this.wallSize = {
-            w: innerWidth,
-            h: 30
-        }
-
-        this.wallPos = {
-            left: 0,
-            top: 0
-        }
-
-        this.init()
-    }
-}
-
-
 
 class Wall3 {
 
@@ -129,7 +146,4 @@ class Wall4 {
         this.gameScreen.appendChild(this.wallElement)
 
     }
-
-
-
 }
