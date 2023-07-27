@@ -1,14 +1,13 @@
 class Player {
-    constructor(gameScreen, gameSize, keys, walls) {
+    constructor(gameScreen, gameSize, keys) {
         this.gameScreen = gameScreen;
         this.gameSize = gameSize;
         this.keys = keys;
-        this.walls = walls;
         this.counterItem = 0
 
         this.playerSize = {
-            w: 80,
-            h: 80,
+            w: innerWidth / 30,
+            h: innerWidth / 30
         };
 
         this.playerPos = {
@@ -24,6 +23,8 @@ class Player {
         this.init();
     }
 
+
+
     init() {
         this.playerElement = document.createElement('div')
 
@@ -32,7 +33,7 @@ class Player {
         this.playerElement.style.height = `${this.playerSize.h}px`;
         this.playerElement.style.left = `${this.playerPos.left}px`;
         this.playerElement.style.top = `${this.playerPos.top}px`;
-        this.playerElement.style.backgroundImage = 'url(./img/whiteDog.gif)';
+        this.playerElement.style.backgroundImage = 'url(./img/player.png)';
         this.playerElement.style.backgroundSize = 'cover';
 
 
@@ -40,28 +41,34 @@ class Player {
     }
 
     move() {
-        this.collisionDetection();
         this.updatePosition();
-
     }
 
     moveLeft() {
-        this.playerPos.left -= this.playerVel.left;
+        if (this.playerPos.left > innerWidth / 70) {
+            this.playerPos.left -= this.playerVel.left;
+        }
 
     }
 
     moveRight() {
-        this.playerPos.left += this.playerVel.left;
+        if (this.playerPos.left + this.playerSize.w < this.gameSize.w - innerWidth / 70) {
+            this.playerPos.left += this.playerVel.left;
+        }
 
     }
 
     moveTop() {
-        this.playerPos.top -= this.playerVel.top;
+        if (this.playerPos.top > innerWidth / 70) {
+            this.playerPos.top -= this.playerVel.top;
+        }
 
     }
 
     moveBottom() {
-        this.playerPos.top += this.playerVel.top;
+        if (this.playerPos.top + this.playerSize.h < this.gameSize.h - innerWidth / 70) {
+            this.playerPos.top += this.playerVel.top;
+        }
 
     }
 
@@ -70,88 +77,87 @@ class Player {
         this.playerElement.style.top = `${this.playerPos.top}px`;
     }
 
-
-    collisionDetection() {
-        // Colisiones con los bordes
-        if (this.playerPos.left < this.walls[2].wallSize.w) {
-            this.playerPos.left = this.walls[2].wallSize.w;
-        }
-
-        if (this.playerPos.left + this.playerSize.w > this.gameSize.w - this.walls[3].wallSize.w) {
-            this.playerPos.left = this.gameSize.w - this.playerSize.w - this.walls[3].wallSize.w;
-        }
-
-        if (this.playerPos.top < this.walls[1].wallSize.h) {
-            this.playerPos.top = this.walls[1].wallSize.h;
-        }
-
-        if (this.playerPos.top + this.playerSize.h > this.gameSize.h - this.walls[0].wallSize.h) {
-            this.playerPos.top = this.gameSize.h - this.playerSize.h - this.walls[0].wallSize.h;
-        }
-    }
-
-    collisionDetectionWithBlocks(blocks) {
-        //Colisiones con los bloques
-        for (const block of blocks) {
-            if (
-                this.playerPos.left < block.blockPos.left + block.blockSize.w &&
-                this.playerPos.left + this.playerSize.w > block.blockPos.left &&
-                this.playerPos.top < block.blockPos.top + block.blockSize.h &&
-                this.playerPos.top + this.playerSize.h > block.blockPos.top
-            ) {
-
-                alert("GAME OVER")
-
-            };
-
-        }
-    }
-
     collisionDetectionWithEnemies(enemies) {
-        //Colisiones con los enemigos
-        for (const enemy of enemies) {
+        for (const enemy of enemies)
             if (
                 this.playerPos.left < enemy.enemiesPos.left + enemy.enemiesSize.w &&
                 this.playerPos.left + this.playerSize.w > enemy.enemiesPos.left &&
                 this.playerPos.top < enemy.enemiesPos.top + enemy.enemiesSize.h &&
                 this.playerPos.top + this.playerSize.h > enemy.enemiesPos.top
             ) {
-                alert("GAME OVER");
+
+                this.playerPos.left = this.gameSize.w / 1.2
+                this.playerPos.top = this.gameSize.h / 1.15
+
+                const audioEnemy = document.createElement("audio"); audioEnemy.src = "./audio/laugh.wav"; audioEnemy.play()
+
             }
-        }
+    }
+
+    collisionDetectionWithBlock(blocks) {
+        for (const block of blocks)
+            if (
+                this.playerPos.left < block.blockPos.left + block.blockSize.w &&
+                this.playerPos.left + this.playerSize.w > block.blockPos.left &&
+                this.playerPos.top < block.blockPos.top + block.blockSize.h &&
+                this.playerPos.top + this.playerSize.h > block.blockPos.top
+            ) {
+                this.playerPos.left = this.gameSize.w / 1.2
+                this.playerPos.top = this.gameSize.h / 1.15
+
+                const audioEnemy = document.createElement("audio"); audioEnemy.src = "./audio/laugh.wav"; audioEnemy.play()
+
+            }
+
     }
 
 
     collisionDetectionWithItems(items) {
-        // Colisiones con los items
-        for (let i = items.length - 1; i >= 0; i--) {
-            const item = items[i];
+        for (const item of items)
             if (
                 this.playerPos.left < item.itemPos.left + item.itemSize.w &&
                 this.playerPos.left + this.playerSize.w > item.itemPos.left &&
                 this.playerPos.top < item.itemPos.top + item.itemSize.h &&
                 this.playerPos.top + this.playerSize.h > item.itemPos.top &&
-                !item.collected // Verificar si el item no está recolectado
+                !item.collected
             ) {
+                const audioCoin = document.createElement("audio"); audioCoin.src = "./audio/coin.wav"; audioCoin.play()
                 item.itemElement.remove();
-                item.collected = true; // Marcar el item como recolectado
+                item.collected = true;
                 this.counterItem = this.counterItem + 1
-                console.log(this.counterItem);
+
                 if (this.counterItem === 5) {
                     this.door = new Door(this.gameScreen, this.gameSize)
                 }
+
             }
+    }
+
+    collisionDetectionWithBoss(boss) {
+        if (
+            this.playerPos.left < boss.bossPos.left + boss.bossSize.w &&
+            this.playerPos.left + this.playerSize.w > boss.bossPos.left &&
+            this.playerPos.top < boss.bossPos.top + boss.bossSize.h &&
+            this.playerPos.top + this.playerSize.h > boss.bossPos.top
+        ) {
+
+            alert("You lose");
+
         }
     }
 
     roadToExit() {
-        if (this.counterItem === 5 &&
-            this.playerPos.left >= this.gameSize.w / 1.125 &&
-            this.playerPos.top >= this.gameSize.h / 1.15) {
 
-            alert("YOU WIN")
+        if (this.counterItem === 5 &&
+            this.playerPos.left >= this.door.doorPos.left &&
+            this.playerPos.top >= this.door.doorPos.top) {
+
+            alert("You win")
+
         }
     }
+
+
 
 }
 

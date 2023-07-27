@@ -4,8 +4,8 @@ class Door {
         this.gameSize = gameSize
 
         this.doorSize = {
-            w: 200,
-            h: 200
+            w: innerWidth / 10,
+            h: innerWidth / 10
         }
 
         this.doorPos = {

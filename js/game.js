@@ -1,5 +1,7 @@
 const Game = {
     gameScreen: document.querySelector("#game-screen"),
+    musicGame: document.querySelector('#musicGame'),
+
 
     gameSize: {
         w: window.innerWidth,
@@ -8,33 +10,23 @@ const Game = {
 
     background: undefined,
 
-    wall: undefined,
-    wall2: undefined,
-    wall3: undefined,
-    wall4: undefined,
+    walls: [],
 
-    block1: undefined,
-    block2: undefined,
-    block3: undefined,
-    block4: undefined,
-    block5: undefined,
-    block6: undefined,
+    blocks: [],
 
-    enemies: undefined,
-    enemies2: undefined,
-    enemies3: undefined,
-    enemies4: undefined,
-    enemies5: undefined,
-    enemies6: undefined,
-    enemies7: undefined,
+    enemies: [],
 
-    door: undefined,
+    items: [],
+
+    doors: [],
 
     player: undefined,
 
-    counterItem: 0,
+    boss: undefined,
 
     keys: { LEFT: 'ArrowLeft', RIGHT: 'ArrowRight', UP: 'ArrowUp', DOWN: 'ArrowDown' },
+
+
 
     init() {
         this.setDimensions()
@@ -74,74 +66,100 @@ const Game = {
         }
     },
 
+
+
     createElement() {
+
         this.background = new Background(this.gameScreen, this.gameSize)
 
-        this.wall = new Wall(this.gameScreen, this.gameSize)
-        this.wall2 = new Wall2(this.gameScreen, this.gameSize)
-        this.wall3 = new Wall3(this.gameScreen, this.gameSize)
-        this.wall4 = new Wall4(this.gameScreen, this.gameSize)
+        this.walls.push(new Wall(this.gameScreen, this.gameSize, innerWidth, innerWidth / 70, 0, this.gameSize.h - innerWidth / 70))
+        this.walls.push(new Wall(this.gameScreen, this.gameSize, innerWidth, innerWidth / 70, 0, 0))
+        this.walls.push(new Wall(this.gameScreen, this.gameSize, innerWidth / 70, innerHeight, 0, 0))
+        this.walls.push(new Wall(this.gameScreen, this.gameSize, innerWidth / 70, innerHeight, innerWidth - innerWidth / 70))
 
-        this.block1 = new Block1(this.gameScreen, this.gameSize)
-        this.block2 = new Block2(this.gameScreen, this.gameSize)
-        this.block3 = new Block3(this.gameScreen, this.gameSize)
-        this.block4 = new Block4(this.gameScreen, this.gameSize)
-        this.block5 = new Block5(this.gameScreen, this.gameSize)
-        this.block6 = new Block6(this.gameScreen, this.gameSize)
 
-        this.enemies = new Enemies(this.gameScreen, this.gameSize)
-        this.enemies2 = new Enemies2(this.gameScreen, this.gameSize)
-        this.enemies3 = new Enemies3(this.gameScreen, this.gameSize)
-        this.enemies4 = new Enemies4(this.gameScreen, this.gameSize)
-        this.enemies5 = new Enemies5(this.gameScreen, this.gameSize)
-        this.enemies6 = new Enemies6(this.gameScreen, this.gameSize)
-        this.enemies7 = new Enemies7(this.gameScreen, this.gameSize)
+        this.blocks.push(new Block(this.gameScreen, this.gameSize, innerWidth / 2.333, innerWidth / 80, innerWidth - innerWidth / 2.333, innerHeight / 1.25))
+        this.blocks.push(new Block(this.gameScreen, this.gameSize, innerWidth / 3, innerWidth / 80, 0, innerHeight / 1.25))
+        this.blocks.push(new Block(this.gameScreen, this.gameSize, innerWidth / 80, innerHeight / 1.25, innerWidth / 2.5, innerHeight - innerHeight / 1.25))
+        this.blocks.push(new Block(this.gameScreen, this.gameSize, innerWidth / 80, innerHeight / 2, innerWidth / 5, 0))
+        this.blocks.push(new Block(this.gameScreen, this.gameSize, innerWidth / 80, innerHeight / 2, innerWidth / 1.25, 0))
+        this.blocks.push(new Block(this.gameScreen, this.gameSize, innerWidth / 80, innerHeight / 2, innerWidth / 1.75, innerHeight / 3.2))
 
-        this.item1 = new Item1(this.gameScreen, this.gameSize)
-        this.item2 = new Item2(this.gameScreen, this.gameSize)
-        this.item3 = new Item3(this.gameScreen, this.gameSize)
-        this.item4 = new Item4(this.gameScreen, this.gameSize)
-        this.item5 = new Item5(this.gameScreen, this.gameSize)
+        this.enemies.push(new Enemies(this.gameScreen, this.gameSize, innerWidth / 25, innerWidth / 25, this.gameSize.w / 1.125, this.gameSize.h / 9, 0, 5,
+            this.gameSize.h / 1.5, this.gameSize.h / 15));
+        this.enemies.push(new Enemies(this.gameScreen, this.gameSize, innerWidth / 30, innerWidth / 30, this.gameSize.w / 1.45, this.gameSize.h / 2.5, 5, 0,
+            this.gameSize.h, 0, this.gameSize.w / 1.7, this.gameSize.w / 1.33));
+        this.enemies.push(new Enemies(this.gameScreen, this.gameSize, innerWidth / 30, innerWidth / 30, this.gameSize.w / 1.9, this.gameSize.h / 9, 0, 7,
+            this.gameSize.h / 1.1, this.gameSize.h / 20));
+        this.enemies.push(new Enemies(this.gameScreen, this.gameSize, innerWidth / 30, innerWidth / 30, this.gameSize.w / 2.85, this.gameSize.h / 15, 0, 8,
+            this.gameSize.h / 1.5, this.gameSize.h / 20));
+        this.enemies.push(new Enemies(this.gameScreen, this.gameSize, innerWidth / 40, innerWidth / 40, this.gameSize.w / 6, this.gameSize.h / 1.2, 3, 0,
+            this.gameSize.h, 0, this.gameSize.w / 15, this.gameSize.w / 3));
+        this.enemies.push(new Enemies(this.gameScreen, this.gameSize, innerWidth / 30, innerWidth / 30, this.gameSize.w / 30, this.gameSize.h / 2.5, 5, 0,
+            this.gameSize.h, 0, this.gameSize.w / 50, this.gameSize.w / 7));
+        this.enemies.push(new Enemies(this.gameScreen, this.gameSize, innerWidth / 30, innerWidth / 30, this.gameSize.w / 4.5, this.gameSize.h / 9, 0, 10,
+            this.gameSize.h / 1.4, this.gameSize.h / 12));
 
-        // Pasamos las instancias de las paredes al jugador
-        this.player = new Player(this.gameScreen, this.gameSize, this.keys, [this.wall, this.wall2, this.wall3, this.wall4]);
+        this.items.push(new Item(this.gameScreen, this.gameSize, this.gameSize.w / 1.075, this.gameSize.h / 9))
+        this.items.push(new Item(this.gameScreen, this.gameSize, this.gameSize.w / 25, this.gameSize.h / 1.15))
+        this.items.push(new Item(this.gameScreen, this.gameSize, this.gameSize.w / 12, this.gameSize.h / 1.5))
+        this.items.push(new Item(this.gameScreen, this.gameSize, this.gameSize.w / 2.2, this.gameSize.h / 2.2))
+        this.items.push(new Item(this.gameScreen, this.gameSize, this.gameSize.w / 10, this.gameSize.h / 10))
+
+        this.player = new Player(this.gameScreen, this.gameSize, this.keys, this.doors);
+
+        this.boss = new Boss(this.gameScreen, this.gameSize)
+
+
+
     },
 
     gameLoop() {
+
         this.drawAll();
-        this.player.collisionDetectionWithBlocks([this.block1, this.block2, this.block3, this.block4, this.block5, this.block6]);
-        this.player.collisionDetectionWithEnemies([this.enemies, this.enemies2, this.enemies3, this.enemies4, this.enemies5, this.enemies6, this.enemies7])
-        this.player.collisionDetectionWithItems([this.item1, this.item2, this.item3, this.item4, this.item5]);
-        this.player.roadToExit()
 
         window.requestAnimationFrame(() => this.gameLoop());
+        this.player.collisionDetectionWithEnemies(this.enemies)
+        this.player.collisionDetectionWithBlock(this.blocks)
+        this.player.collisionDetectionWithItems(this.items)
+        this.player.collisionDetectionWithBoss(this.boss);
+        this.player.roadToExit()
+
     },
 
     drawAll() {
-        this.player.move()
-        this.enemies.move();
-        this.enemies2.move();
-        this.enemies3.move();
-        this.enemies4.move();
-        this.enemies5.move();
-        this.enemies6.move();
-        this.enemies7.move();
 
+        this.player.move()
+        this.enemies.forEach(enemy => enemy.move());
+        this.boss.move()
     },
 
 
     getEnemiesPositions() {
-        return [
-            this.enemies.enemiesPos,
-            this.enemies2.enemiesPos,
-            this.enemies3.enemiesPos,
-            this.enemies4.enemiesPos,
-            this.enemies5.enemiesPos,
-            this.enemies6.enemiesPos,
-            this.enemies7.enemiesPos,
-        ];
+        return this.enemies.map(enemy => enemy.enemiesPos);
+    },
+
+    createSplashScreen() {
+        const start = document.createElement('div');
+        start.style.position = "absolute"
+        start.style.backgroundImage = "url(/img/allDogs.png)";
+        start.style.backgroundSize = { w: this.gameSize.w, h: this.gameScreen.h };
+        start.style.width = `${window.innerWidth}px`;
+        start.style.height = `${window.innerHeight}px`;
+        start.style.backgroundSize = "cover";
+        start.style.position = 'relative';
+        start.style.zIndex = '1';
+
+        document.body.insertBefore(start, this.gameScreen)
+
+        start.addEventListener("click", () => {
+            start.remove()
+            this.init()
+        });
+
     },
 
 
+}
 
-};
+
