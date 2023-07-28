@@ -1,6 +1,6 @@
 const Game = {
     gameScreen: document.querySelector("#game-screen"),
-    musicGame: document.querySelector('#musicGame'),
+    musicGame: document.querySelector('#gameMusic'),
 
 
     gameSize: {
@@ -25,6 +25,7 @@ const Game = {
     boss: undefined,
 
     keys: { LEFT: 'ArrowLeft', RIGHT: 'ArrowRight', UP: 'ArrowUp', DOWN: 'ArrowDown' },
+
 
 
 
@@ -139,6 +140,7 @@ const Game = {
         return this.enemies.map(enemy => enemy.enemiesPos);
     },
 
+
     createSplashScreen() {
         const start = document.createElement('div');
         start.style.position = "absolute"
@@ -155,10 +157,10 @@ const Game = {
         start.addEventListener("click", () => {
             start.remove()
             this.init()
+
         });
 
     },
-
 
 }
 
